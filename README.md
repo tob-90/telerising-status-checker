@@ -45,4 +45,4 @@ The health check endpoint can be integrated into monitoring software such as **U
 
 ## Disclaimer
 > [!CAUTION]
-> This script is provided "as is," without any warranties or guarantees. The author is not responsible for any data loss, missed reminders, or unintended consequences resulting from the use of this script. Users are responsible for configuring and testing the script to ensure it meets their needs. Use at your own risk.
+> This script is provided "as is," without any warranties or guarantees. The author is not responsible for any data loss or unintended consequences resulting from the use of this script. Users are responsible for configuring and testing the script to ensure it meets their needs. Use at your own risk.
