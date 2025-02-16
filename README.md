@@ -10,6 +10,7 @@ The primary focus is on monitoring the availability and health of the providers 
 - Identifies status indicators using regex patterns
 - Monitors the status of integrated providers
 - Returns a JSON response indicating the health status
+- Returns HTTP status code 200 when the service is healthy and 500 when it is unhealthy
 
 ## Installation
 ### Requirements
@@ -39,6 +40,8 @@ python3 healthcheck.py & disown
 The API will be accessible at `http://0.0.0.0:5555/`.
 
 ## Monitoring Integration
+The API returns HTTP status code 200 when the service is healthy and 500 when it is unhealthy.
+
 The health check endpoint can be integrated into monitoring software such as **Uptime Kuma**. By configuring Uptime Kuma to periodically check the endpoint, automatic alerts can be triggered whenever the service status is reported as **unhealthy**. This allows for real-time monitoring and automated notifications in case of failures. The monitoring primarily ensures that the providers integrated within the Telerising service are operational and responsive.
 
 ![uptime_kuma](https://github.com/user-attachments/assets/70b31add-ca7c-46d9-a36c-ddebc9734897)
