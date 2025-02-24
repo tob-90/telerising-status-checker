@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 from flask import Flask, jsonify
 import re
 import logging
+import json
 
 app = Flask(__name__)
 
