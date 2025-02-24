@@ -38,36 +38,40 @@ def healthcheck():
 
         # HTML-Quellcode parsen
         soup = BeautifulSoup(status_response.text, 'html.parser')
+ 
+        data = []
 
-        # Finde IDs, die mit '-status' enden
-        status_elements = soup.find_all(id=re.compile(r'.*-status$'))
+        # JavaScript-Code extrahieren
+        for script in soup.find_all('script', type='text/javascript'):
+            for line in script.text.splitlines():
+                line = line.strip()
+                if line.startswith('var test ='):
+                    json_string = line.replace('var test =', '').replace(';', '').strip()
+                    json_obj = json.loads(json_string)
+                    for key in json_obj.keys():
+                        data.append({
+                            "Account": json_obj[key]['info']['type'],
+                            "Provider": key,
+                            "Status": json_obj[key].get('status', None),
+                            "Success": json_obj[key].get('success', None)
+                        })
 
-        # Filtere nach IDs, die nicht '-card-status' enthalten
-        status_elements = [el for el in status_elements if '-card-status' not in el.get('id', '')]
+        if all(item['Success'] for item in data):
+            status_value = "healthy"
+        else:
+            status_value = "unhealthy"
 
-        # Finde IDs, die mit '-account-text' enden
-        account_text_elements = soup.find_all(id=re.compile(r'.*-account-text$'))
+        # Providers formatieren
+        providers = {}
 
-        # Extrahieren der Statuswerte
-        status_values = {}
-        account_text_values = {}
+        for item in data:
+            providers[item["Provider"]] = {
+                "Account": item["Account"],
+                "Status": item["Status"],
+                "Success": item["Success"]
+            }
 
-        for status_element in status_elements:
-            status_id = status_element.get('id')
-            status_values[status_id] = status_element.text.strip()
-
-        for account_text_element in account_text_elements:
-            account_text_id = account_text_element.get('id')
-            account_text_values[account_text_id] = account_text_element.text.strip()
-
-        # Prüfung, ob der account-text 'Unknown' enthält
-        for status_id, status_value in status_values.items():
-            account_text_value = account_text_values.get(status_id.replace("-status", "-account-text"), None)
-            if account_text_value == "Unknown":
-                return jsonify({"status": "unhealthy", "details": {"status": status_values, "account-text": account_text_values}}), 500
-
-        # Ansonsten Status healthy
-        return jsonify({"status": "healthy", "details": {"status": status_values, "account-text": account_text_values}}), 200
+        return jsonify({"status": status_value, "Providers": providers}), 200 if status_value == "healthy" else 500    
 
     except requests.exceptions.RequestException as e:
         logging.error(f"HTTP-Fehler: {e}")
