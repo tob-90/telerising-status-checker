@@ -60,7 +60,7 @@ def healthcheck():
             account_text_id = account_text_element.get('id')
             account_text_values[account_text_id] = account_text_element.text.strip()
 
-        # Prüfung, ob Status OK ist und der account-text 'Unknown' enthält
+        # Prüfung, ob der account-text 'Unknown' enthält
         for status_id, status_value in status_values.items():
             account_text_value = account_text_values.get(status_id.replace("-status", "-account-text"), None)
             if account_text_value == "Unknown":
