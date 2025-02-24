@@ -62,11 +62,9 @@ def healthcheck():
 
         # Prüfung, ob Status OK ist und der account-text 'Unknown' enthält
         for status_id, status_value in status_values.items():
-            if status_value == "OK":
-                # Wenn der Status "OK" ist und der account-text "Unknown" liefert, dann unhealthy
-                account_text_value = account_text_values.get(status_id.replace("-status", "-account-text"), None)
-                if account_text_value == "Unknown":
-                    return jsonify({"status": "unhealthy", "details": {"status": status_values, "account-text": account_text_values}}), 500
+            account_text_value = account_text_values.get(status_id.replace("-status", "-account-text"), None)
+            if account_text_value == "Unknown":
+                return jsonify({"status": "unhealthy", "details": {"status": status_values, "account-text": account_text_values}}), 500
 
         # Ansonsten Status healthy
         return jsonify({"status": "healthy", "details": {"status": status_values, "account-text": account_text_values}}), 200
